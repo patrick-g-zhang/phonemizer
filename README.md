@@ -32,6 +32,8 @@ https://doi.org/10.5281/zenodo.1045825)
     build a phonemization from a grapheme to phoneme mapping provided as a file
     by the user.
 
+## Update
+For festival tool, we add stress mark to VOWEL. 'ae' -> 'AE1' only work for festival backend.
 
 ## Installation
 

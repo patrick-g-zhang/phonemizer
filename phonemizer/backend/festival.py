@@ -27,12 +27,15 @@ from phonemizer.backend.base import BaseBackend
 from phonemizer.logger import get_logger
 from phonemizer.punctuation import Punctuation
 from phonemizer.utils import get_package_resource
-
+import pdb
 
 # a global variable being used to overload the default festival installed on
 # the system. The user can choose an alternative espeak with the method
 # FestivalBackend.set_festival_path().
 _FESTIVAL_DEFAULT_PATH = None
+
+_VOWEL_SET = ['AA', 'AE', 'AH', "AO", "AW", 'AX', "AXR", 'AY', 'EH',
+              "EL", "EM", "EN", "ER", "EY", 'IH', 'IY', 'OW', 'OY', 'UH', 'UW']
 
 
 class FestivalBackend(BaseBackend):
@@ -120,6 +123,7 @@ class FestivalBackend(BaseBackend):
         (typically with unbalanced parenthesis) raises an IndexError.
 
         """
+        # pdb.set_trace()
         a = self._preprocess(text)
         if len(a) == 0:
             return []
@@ -224,8 +228,18 @@ class FestivalBackend(BaseBackend):
     @staticmethod
     def _postprocess_syll(syll, separator, strip):
         """Parse a syllable from festival to phonemized output"""
+        # pdb.set_trace()
         sep = separator.phone
-        out = (phone[0][0].replace('"', '') for phone in syll[1:])
+        stress_id = syll[0][1][-1][-1]
+        out = []
+        for phone in syll[1:]:
+            phoneme_identity = phone[0][0].replace('"', '').upper()
+            if phoneme_identity in _VOWEL_SET:
+                # add stress id to vowel set
+                phoneme_identity = phoneme_identity + stress_id
+            out.append(phoneme_identity)
+
+        # out = (phone[0][0].replace('"', '') for phone in syll[1:])
         out = sep.join(o for o in out if o != '')
         return out if strip else out + sep
 
